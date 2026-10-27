@@ -1,0 +1,42 @@
+# Godspeed questionnaire series (Bartneck et al., 2009), 5-point semantic
+# differential. Items from latex-questionnaire/GodSpeed/*.csv.
+id: godspeed
+title: Your impression of HuRI
+scale:
+  points: 5
+sections:
+  - prompt: Please rate your impression of the robot on these scales.
+    items:
+      - {id: humanlike, low: Machinelike, high: Humanlike}
+      - {id: knowledgeable, low: Ignorant, high: Knowledgeable}
+      - {id: nice, low: Awful, high: Nice}
+      - {id: kind, low: Unkind, high: Kind}
+      - {id: intelligent, low: Unintelligent, high: Intelligent}
+      - {id: like, low: Dislike, high: Like}
+      - {id: alive, low: Dead, high: Alive}
+      - {id: sensible, low: Foolish, high: Sensible}
+      - {id: conscious, low: Unconscious, high: Conscious}
+      - {id: lifelike, low: Artificial, high: Lifelike}
+      - {id: natural, low: Fake, high: Natural}
+      - {id: moving_elegantly, low: Moving rigidly, high: Moving elegantly}
+      - {id: competent, low: Incompetent, high: Competent}
+      - {id: organic, low: Mechanical, high: Organic}
+      - {id: lively, low: Stagnant, high: Lively}
+      - {id: pleasant, low: Unpleasant, high: Pleasant}
+      - {id: responsive, low: Apathetic, high: Responsive}
+      - {id: friendly, low: Unfriendly, high: Friendly}
+      - {id: responsible, low: Irresponsible, high: Responsible}
+      - {id: interactive, low: Inert, high: Interactive}
+  - prompt: Please rate your emotional state on these scales.
+    items:
+      - {id: calm, low: Agitated, high: Calm}
+      - {id: relaxed, low: Anxious, high: Relaxed}
+      - {id: surprised, low: Quiescent, high: Surprised}
+# The five Godspeed dimensions, each the mean of its items. Artificial/Lifelike
+# belongs to both anthropomorphism and animacy, as in the original series.
+scores:
+  anthropomorphism: [natural, humanlike, conscious, lifelike, moving_elegantly]
+  animacy: [alive, lively, organic, lifelike, interactive, responsive]
+  likeability: [like, friendly, kind, pleasant, nice]
+  perceived_intelligence: [competent, knowledgeable, responsible, intelligent, sensible]
+  perceived_safety: [relaxed, calm, surprised]

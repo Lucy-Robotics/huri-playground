@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Talk with HuRI</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <script src="/static/app.js" defer></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "/static/vendor/three/build/three.module.min.js",
+          "three/addons/": "/static/vendor/three/addons/"
+        }
+      }
+    </script>
+    <script type="module" src="/static/avatar.js"></script>
+  </head>
+  <body data-screen="welcome">
+    <main>
+      <header>
+        <h1>HuRI</h1>
+        <p class="subtitle">A conversational robot brain, by Lucy Robotics</p>
+      </header>
+
+      <!-- Mouse-Man, on the welcome and conversation screens (avatar.js) -->
+      <div id="avatar" class="avatar" aria-hidden="true" hidden></div>
+
+      <!-- 1. Welcome and consent -->
+      <section id="screen-welcome" class="card">
+        <h2>Talk with HuRI, then tell us what you thought</h2>
+        <p>
+          You will have a short conversation with HuRI (up to
+          <span id="welcome-minutes">5</span> minutes). Afterwards we will ask
+          you to rate your impression of it. It takes about 5 minutes.
+        </p>
+        <form id="start-form">
+          <fieldset id="modules-field" class="field modules">
+            <legend class="label">What HuRI runs for you</legend>
+            <p class="muted small">
+              Pick any modules this HuRI server has. What one needs is ticked
+              with it.
+            </p>
+            <div id="module-options"></div>
+          </fieldset>
+          <label id="access-field" class="field" hidden>
+            <span class="label">Access code</span>
+            <input id="access-code" type="password" autocomplete="off" />
+          </label>
+          <!-- Stays in view at the bottom while the modules scroll. -->
+          <div class="start-bar">
+            <p id="pipeline-summary" class="summary" aria-live="polite"></p>
+            <label class="check">
+              <input id="consent" type="checkbox" required />
+              <span>
+                I agree to take part and to have my ratings stored anonymously.
+                <span class="muted small">
+                  We keep how long the conversation lasted and how many messages
+                  you sent, but not what you wrote.
+                </span>
+              </span>
+            </label>
+            <p id="start-error" class="error" role="alert" hidden></p>
+            <button id="start-button" type="submit" class="primary">
+              Start the conversation
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 2. Conversation -->
+      <section id="screen-chat" class="card" hidden>
+        <div class="chat-head">
+          <span id="chat-status" class="muted">Connected</span>
+          <span id="mode" class="mode" hidden></span>
+          <span id="timer" class="timer" aria-live="off"></span>
+        </div>
+        <ol id="messages" class="messages" aria-live="polite"></ol>
+        <p id="hearing" class="hearing muted" aria-live="polite" hidden></p>
+        <p id="sensing" class="sensing" aria-live="polite" hidden></p>
+        <p id="chat-notice" class="notice" role="status" hidden></p>
+        <div id="mic-bar" class="mic-bar" hidden>
+          <button id="mic" type="button" aria-pressed="false">
+            Turn the microphone on
+          </button>
+          <span id="mic-status" class="muted"></span>
+        </div>
+        <form id="composer" class="composer">
+          <textarea
+            id="question"
+            rows="2"
+            placeholder="Say hello to HuRI…"
+            aria-label="Your message"
+          ></textarea>
+          <button id="send" type="submit" class="primary">Send</button>
+        </form>
+        <div class="chat-foot">
+          <span id="finish-hint" class="muted">When you are done, finish to rate HuRI.</span>
+          <button id="finish" type="button" disabled>
+            Finish and rate HuRI
+          </button>
+        </div>
+      </section>
+
+      <!-- 3. Questionnaires -->
+      <section id="screen-survey" class="card" hidden>
+        <p id="survey-step" class="muted"></p>
+        <h2 id="survey-title"></h2>
+        <form id="survey-form" novalidate>
+          <div id="survey-body"></div>
+          <label id="comment-field" class="field" hidden>
+            <span class="label">Anything else you want to tell us? (optional)</span>
+            <textarea id="comment" rows="3" maxlength="2000"></textarea>
+          </label>
+          <p id="survey-error" class="error" role="alert" hidden></p>
+          <button id="survey-next" type="submit" class="primary">Next</button>
+        </form>
+      </section>
+
+      <!-- 4. End -->
+      <section id="screen-end" class="card" hidden>
+        <h2 id="end-title">Thank you!</h2>
+        <p id="end-text">Your answers were saved. You can close this page.</p>
+        <button id="restart" type="button" hidden>Try again</button>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,935 @@
+:root {
+  --bg: #f5f5f2;
+  --card: #ffffff;
+  --text: #1d1d1b;
+  --muted: #6b6b66;
+  --line: #e2e2dc;
+  --accent: #2f5d8a;
+  --accent-text: #ffffff;
+  --huri: #eef3f8;
+  --you: #2f5d8a;
+  --error: #b3261e;
+  --radius: 12px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #161615;
+    --card: #20201f;
+    --text: #ececea;
+    --muted: #a3a39d;
+    --line: #34342f;
+    --accent: #7fb0e0;
+    --accent-text: #10202f;
+    --huri: #2a3440;
+    --you: #3d6a96;
+    --error: #f2b8b5;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Classes below set `display`, which would otherwise win over `hidden`. */
+[hidden] {
+  display: none !important;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+
+.subtitle,
+.muted {
+  color: var(--muted);
+}
+
+.subtitle {
+  margin: 4px 0 20px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+.card h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.field {
+  display: block;
+  margin: 16px 0;
+}
+
+.label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+input[type="password"],
+textarea {
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.check {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin: 16px 0;
+}
+
+.small {
+  font-size: 0.85rem;
+}
+
+/* Module picker */
+
+.modules {
+  border: none;
+  margin: 16px 0;
+  padding: 0;
+  min-inline-size: 0;
+}
+
+.modules legend {
+  padding: 0 4px;
+}
+
+.modules .small {
+  margin: 0 0 4px;
+}
+
+/* The groups, in the flow's order: side by side when they fit. */
+#module-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  gap: 6px 10px;
+}
+
+.module-group h3 {
+  margin: 6px 0 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* Tiles in a group: stacked in a narrow column, two a row when the group
+   spans a phone's width. */
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 8.5rem), 1fr));
+  gap: 6px;
+}
+
+.module {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-content: start;
+  gap: 2px 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.module:hover {
+  border-color: var(--accent);
+}
+
+.module.on {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+.module:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.module > :not(input) {
+  grid-column: 2;
+}
+
+.module input {
+  grid-row: 1 / span 2;
+  grid-column: 1;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
+.module .name {
+  font-weight: 600;
+}
+
+/* Topics are in the tile's tooltip; the description is cut to two lines. */
+.module .topics {
+  display: none;
+}
+
+.module .muted.small {
+  font-size: 0.8rem;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.module .needs {
+  color: var(--error);
+  font-size: 0.85rem;
+}
+
+/* Module settings: one full-width row under the groups. */
+.settings-area:empty {
+  display: none;
+}
+
+.module-settings {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 10px;
+}
+
+.module-settings fieldset {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  gap: 0 18px;
+}
+
+.module-settings fieldset > legend {
+  padding: 0;
+  margin-bottom: 2px;
+}
+
+.module-settings .option-hint {
+  grid-column: 1 / -1;
+}
+
+.module-settings fieldset {
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+.module-settings legend {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.module-settings .check {
+  margin: 4px 0;
+  font-size: 0.9rem;
+}
+
+.module-settings .inactive .check {
+  opacity: 0.6;
+}
+
+.option-hint {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.mode {
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: var(--accent-text);
+  text-align: center;
+}
+
+/* What the ticked modules make HuRI do, the consent and "Start": kept in view
+   at the bottom while the list of modules scrolls. */
+.start-bar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  margin: 0 -8px;
+  padding: 2px 8px 10px;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -8px 12px -10px rgba(0, 0, 0, 0.25);
+}
+
+.summary {
+  margin: 8px 0 0;
+  font-size: 0.9rem;
+}
+
+.summary.invalid {
+  color: var(--error);
+}
+
+button {
+  font: inherit;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.error {
+  color: var(--error);
+}
+
+.notice {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Conversation */
+
+.chat-head,
+.chat-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px 12px;
+}
+
+.chat-head {
+  flex-wrap: wrap;
+}
+
+.chat-head #chat-status,
+.chat-head .timer {
+  flex: none;
+  white-space: nowrap;
+}
+
+/* Beside the status and the timer, the mode shortens itself (full text on
+   hover) rather than pushing them onto a new line. On phones it gets a line
+   of its own instead (see max-width: 560px). */
+@media (min-width: 561px) {
+  .chat-head {
+    flex-wrap: nowrap;
+  }
+
+  .chat-head .mode {
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.timer {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.timer.low {
+  color: var(--error);
+}
+
+.avatar {
+  position: relative;
+  height: 300px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 40%, var(--huri), transparent 75%);
+  overflow: hidden;
+}
+
+.avatar canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.avatar[data-state="loading"]::after {
+  content: "Mouse-Man is getting ready…";
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+}
+
+/* Mouse-Man greets and talks; he steps away for the questionnaires. */
+body:not([data-screen="welcome"]):not([data-screen="chat"]) .avatar {
+  display: none;
+}
+
+.messages {
+  list-style: none;
+  margin: 16px 0;
+  padding: 0;
+  min-height: 240px;
+  max-height: 55vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.messages li {
+  max-width: 85%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  white-space: pre-wrap;
+  line-height: 1.45;
+}
+
+.messages li.huri {
+  align-self: flex-start;
+  background: var(--huri);
+}
+
+.messages li.you {
+  align-self: flex-end;
+  background: var(--you);
+  color: #fff;
+}
+
+.messages li.pending::after {
+  content: "…";
+  color: var(--muted);
+}
+
+.hearing {
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0 0 8px;
+}
+
+.sensing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.85rem;
+  margin: 0 0 8px;
+}
+
+.sensing .score {
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--muted);
+  background: linear-gradient(
+    to right,
+    color-mix(in srgb, var(--accent) 25%, transparent) calc(var(--score) * 100%),
+    var(--huri) 0
+  );
+}
+
+.messages li .emotion {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+.mic-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+#mic[aria-pressed="true"] {
+  background: var(--error);
+  border-color: var(--error);
+  color: #fff;
+}
+
+.composer {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+/* Questionnaires */
+
+.section-prompt {
+  font-weight: 600;
+  margin: 20px 0 8px;
+}
+
+.scale-head,
+.item {
+  display: grid;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0;
+}
+
+.item {
+  border: none;
+  border-top: 1px solid var(--line);
+  margin: 0;
+  min-inline-size: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.item.missing {
+  background: color-mix(in srgb, var(--error) 10%, transparent);
+}
+
+.differential .item,
+.differential .scale-head {
+  grid-template-columns: 1fr auto 1fr;
+}
+
+.differential .low {
+  text-align: right;
+}
+
+.likert .item,
+.likert .scale-head {
+  grid-template-columns: 10rem 1fr;
+}
+
+.points {
+  display: flex;
+  justify-content: space-between;
+  gap: 4px;
+}
+
+.points label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--muted);
+  min-width: 28px;
+  cursor: pointer;
+}
+
+.points input {
+  width: 20px;
+  height: 20px;
+  margin: 0 0 2px;
+  accent-color: var(--accent);
+}
+
+.scale-head {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.scale-head .ends {
+  display: flex;
+  justify-content: space-between;
+}
+
+#survey-next {
+  margin-top: 12px;
+}
+
+@media (max-width: 560px) {
+  main {
+    padding: 16px 10px 32px;
+  }
+
+  .card {
+    padding: 16px;
+  }
+
+  .subtitle {
+    margin-bottom: 12px;
+  }
+
+  .messages li {
+    max-width: 92%;
+  }
+
+  /* Status and timer on one line, the mode under them, full width. */
+  .chat-head .mode {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  /* Fingers, not a mouse pointer. */
+  .module input,
+  .module-settings input,
+  .check input {
+    width: 20px;
+    height: 20px;
+  }
+
+  .mic-bar {
+    flex-wrap: wrap;
+  }
+
+  #mic {
+    flex: 1 1 auto;
+  }
+
+  .chat-foot {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+
+  button.primary,
+  #finish {
+    min-height: 44px;
+  }
+
+  .differential .item {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .differential .item .low {
+    text-align: left;
+  }
+
+  .differential .item .high {
+    text-align: right;
+  }
+
+  .differential .item .points {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .likert .item,
+  .likert .scale-head {
+    grid-template-columns: 1fr;
+  }
+
+  .differential .scale-head,
+  .likert .scale-head > :first-child {
+    display: none;
+  }
+}
+
+/* Layout for any screen ---------------------------------------------------
+ *
+ * One column by default. The conversation always fits the screen: the
+ * messages take whatever height is left, so the microphone, the composer and
+ * "finish" stay in view on a small phone as on a large monitor. When there is
+ * width to spare (desktops, or a phone on its side) Mouse-Man moves beside
+ * the conversation instead of above it.
+ */
+
+/* Text grows a little on large monitors. */
+@media (min-width: 1800px) {
+  html {
+    font-size: 112.5%;
+  }
+}
+
+@media (min-width: 2400px) {
+  html {
+    font-size: 125%;
+  }
+}
+
+.avatar {
+  height: clamp(120px, 32vh, 340px);
+}
+
+body[data-screen="chat"] main {
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+body[data-screen="chat"] header {
+  flex: none;
+}
+
+body[data-screen="chat"] .subtitle {
+  margin-bottom: 8px;
+}
+
+body[data-screen="chat"] .avatar {
+  flex: none;
+  height: clamp(90px, 24vh, 300px);
+  height: clamp(90px, 24dvh, 300px);
+  margin-bottom: 10px;
+}
+
+body[data-screen="chat"] #screen-chat {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body[data-screen="chat"] #screen-chat > * {
+  flex: none;
+}
+
+body[data-screen="chat"] #screen-chat .messages {
+  flex: 1 1 auto;
+  min-height: 5rem;
+  max-height: none;
+  margin: 12px 0;
+}
+
+/* Narrow screens: the conversation, not the page title, gets the height. */
+@media (max-width: 560px) {
+  body[data-screen="chat"] .subtitle {
+    display: none;
+  }
+
+  body[data-screen="chat"] header h1 {
+    font-size: 1.2rem;
+  }
+
+  body[data-screen="chat"] .avatar {
+    height: clamp(70px, 17vh, 200px);
+    height: clamp(70px, 17dvh, 200px);
+  }
+
+  /* The button says it already. */
+  body[data-screen="chat"] .chat-foot .muted {
+    display: none;
+  }
+}
+
+/* Small phones and short screens: one line each for the mode and the
+   emotion, a slimmer composer, tighter gaps. */
+@media (max-height: 700px) {
+  body[data-screen="chat"] .chat-head .mode {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body[data-screen="chat"] .sensing .score {
+    display: none;
+  }
+
+  body[data-screen="chat"] #question {
+    min-height: 0;
+    height: 2.6rem;
+  }
+
+  body[data-screen="chat"] #screen-chat .messages {
+    margin: 6px 0;
+  }
+
+  body[data-screen="chat"] .hearing,
+  body[data-screen="chat"] .sensing {
+    margin-bottom: 4px;
+  }
+
+  body[data-screen="chat"] .composer,
+  body[data-screen="chat"] .mic-bar {
+    margin-bottom: 6px;
+  }
+}
+
+/* Short screens (phone on its side, small laptop): every line counts. */
+@media (max-height: 560px) {
+  body[data-screen="chat"] header {
+    display: none;
+  }
+
+  body[data-screen="chat"] .avatar {
+    height: clamp(60px, 18vh, 120px);
+    height: clamp(60px, 18dvh, 120px);
+  }
+
+  /* Status, mode and timer on one line; the mode is cut short if needed. */
+  body[data-screen="chat"] .chat-head {
+    flex-wrap: nowrap;
+  }
+
+  body[data-screen="chat"] .chat-head .mode {
+    order: 0;
+    flex: 0 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  body[data-screen="chat"] .chat-foot .muted {
+    display: none;
+  }
+
+  body[data-screen="chat"] .chat-foot {
+    justify-content: flex-end;
+  }
+
+  body[data-screen="chat"] .card {
+    padding: 10px 14px;
+  }
+
+  body[data-screen="chat"] .chat-foot {
+    flex-direction: row;
+  }
+}
+
+/* Mouse-Man beside the conversation: wide screens, landscape tablets, and
+   phones on their side. */
+@media (min-width: 1100px),
+  (min-width: 900px) and (orientation: landscape),
+  (min-width: 640px) and (max-height: 560px) and (orientation: landscape) {
+  body.has-avatar[data-screen="welcome"] main,
+  body.has-avatar[data-screen="chat"] main {
+    max-width: 80rem;
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    grid-template-areas:
+      "header card"
+      "avatar card";
+    column-gap: 24px;
+  }
+
+  body.has-avatar main > header {
+    grid-area: header;
+  }
+
+  body.has-avatar main > .card {
+    grid-area: card;
+  }
+
+  body.has-avatar main > .avatar {
+    grid-area: avatar;
+    margin: 0;
+  }
+
+  body.has-avatar[data-screen="welcome"] main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2.4fr);
+  }
+
+  /* Next to a long form, Mouse-Man stays in view while it scrolls. */
+  body.has-avatar[data-screen="welcome"] .avatar {
+    position: sticky;
+    top: 16px;
+    align-self: start;
+    height: min(70vh, 600px);
+  }
+
+  /* In the conversation the card starts at the top: the title is beside it. */
+  body.has-avatar[data-screen="chat"] header {
+    display: block;
+  }
+
+  body.has-avatar[data-screen="chat"] .avatar {
+    align-self: stretch;
+    height: auto;
+  }
+}
+
+/* A phone on its side: the conversation needs the width more than he does. */
+@media (min-width: 640px) and (max-height: 560px) and (orientation: landscape) {
+  body.has-avatar[data-screen="welcome"] main,
+  body.has-avatar[data-screen="chat"] main {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    column-gap: 12px;
+  }
+}
+
+/* The start screen in one column (phones, portrait tablets): a smaller
+   Mouse-Man, so the choices come sooner. */
+body[data-screen="welcome"] .avatar {
+  height: clamp(100px, 22vh, 260px);
+  height: clamp(100px, 22dvh, 260px);
+}
+
+/* Short screens: the start screen drops its helper line and tightens up, so
+   the modules, the mode and "Start" fit on a laptop without scrolling. */
+@media (max-height: 820px) {
+  body[data-screen="welcome"] .modules > .small {
+    display: none;
+  }
+
+  body[data-screen="welcome"] .modules {
+    margin: 8px 0;
+  }
+
+  body[data-screen="welcome"] .card h2 {
+    margin-bottom: 8px;
+  }
+
+  body[data-screen="welcome"] .card p {
+    margin: 6px 0;
+  }
+
+  body[data-screen="welcome"] .summary {
+    margin-top: 6px;
+  }
+
+  body[data-screen="welcome"] .check {
+    margin: 8px 0;
+  }
+
+  body[data-screen="welcome"] main {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+/* A phone on its side: a bar that stays would hide most of the list. */
+@media (max-height: 560px) {
+  .start-bar {
+    position: static;
+    box-shadow: none;
+  }
+}
+

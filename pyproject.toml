@@ -1,0 +1,90 @@
+[build-system]
+requires = ["setuptools>=64,<82"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "huri-playground"
+version = "0.1.0.dev0"
+description = "HuRI playground: a public web page to talk with a HuRI server, then rate it (Godspeed, RoSAS)"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+# A use case of HuRI, not a part of it: only the client SDK, by version range
+# (see README's "Versions and compatibility"). Not huri-core[server]: the
+# gateway is a client of HuRI and never installs Ray. It relays the events it
+# subscribes to without decoding them, so it does not need huri-events either.
+dependencies = [
+  "huri-core[client]>=0.4,<0.5",
+  "fastapi>=0.110",
+  "uvicorn>=0.30",
+  "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black==26.3.1",
+  "flake8==7.3.0",
+  "flake8-toml-config==1.0.0",
+  "isort==8.0.1",
+  "mypy==1.20.2",
+  "pytest==9.0.3",
+  "tomli>=2; python_version < '3.11'",
+]
+
+[project.scripts]
+huri-playground = "huri_playground.__main__:main"
+
+[project.urls]
+Homepage = "https://github.com/Lucy-Robotics/HuRI-Playground"
+Repository = "https://github.com/Lucy-Robotics/HuRI-Playground"
+Documentation = "https://github.com/Lucy-Robotics/HuRI-Playground#readme"
+HuRI = "https://github.com/Lucy-Robotics/huri-core#huri-ecosystem"
+
+[tool.setuptools.packages.find]
+include = ["huri_playground*"]
+
+[tool.setuptools.package-data]
+# The page, its scripts and styles, the vendored three.js and the yaml files
+# the gateway reads. The Mouse-Man model (static/avatar/) is not packaged.
+huri_playground = [
+  "*.yaml",
+  "questionnaires/*.yaml",
+  "static/*",
+  "static/vendor/three/**/*",
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py310"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
+multi_line_output = 3
+include_trailing_comma = true
+skip_gitignore = true
+known_first_party = ["huri_playground"]
+
+[tool.flake8]
+max-line-length = 88
+extend-ignore = ["E203"]
+exclude = """
+  __pycache__
+  venv
+  .venv
+  build
+"""
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+strict_optional = true
+warn_unused_configs = true
+exclude = [
+  "^tests/",
+  "^build/",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]

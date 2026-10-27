@@ -1,0 +1,19 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.mypy_cache/
+/.venv*/
+/venv*/
+/uv.lock
+*.log
+# Questionnaire answers the gateway writes (PLAYGROUND_DATA_DIR)
+playground_data/
+# Mouse-Man model (30 MB, from Lucy-Robotics/HuRI_website_demo, Git LFS)
+huri_playground/static/avatar/
+# CI downloads huri-modules' registry here
+/registry.toml
+# scripts/compare_qag_modes.py --record
+*.wav

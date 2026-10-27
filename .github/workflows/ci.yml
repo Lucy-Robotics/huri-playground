@@ -1,0 +1,122 @@
+# huri-playground's checks, on every push and pull request.
+#
+# huri-playground is a use case of HuRI, not a part of it: it is tested against
+# huri-core (client extra) installed from git at the ref below, the release tag
+# inside this version's `huri-core[client]` range (core's `dev` carries the next
+# minor's .dev0, which the range excludes); it moves with the range. The module
+# packages of huri-modules are not installed: the gateway never imports them
+# (the test that checks modules.yaml's args against their signatures skips).
+# Run the workflow by hand to test other refs.
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      huri_core_ref:
+        description: huri-core ref (branch or tag)
+        default: "0.4.0"
+      huri_modules_ref:
+        description: huri-modules ref (branch or tag), for registry.toml
+        default: dev
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  HURI_CORE_REF: ${{ inputs.huri_core_ref || '0.4.0' }}
+  HURI_MODULES_REF: ${{ inputs.huri_modules_ref || 'dev' }}
+  # Never wait for credentials: a wrong ref or a private repo fails at once.
+  GIT_TERMINAL_PROMPT: "0"
+  GIT_ASKPASS: /bin/true
+
+jobs:
+  test:
+    name: pytest (python ${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+          cache: pip
+      - name: huri-core[client] at the ref
+        run: |
+          pip install \
+            "huri-core[client] @ git+https://github.com/Lucy-Robotics/huri-core.git@${HURI_CORE_REF}"
+      - run: pip install -e ".[dev]"
+      - name: the server stack is not installed by a client
+        run: |
+          if python -c "import ray" 2>/dev/null; then
+            echo "::error::ray is installed by huri-playground"; exit 1
+          fi
+      - run: pytest -q
+      - name: the app builds and serves its page
+        run: |
+          python - <<'PY'
+          from fastapi.testclient import TestClient
+          from huri_playground.gateway import create_app
+          client = TestClient(create_app())
+          assert client.get("/").status_code == 200
+          config = client.get("/api/config").json()
+          assert config["huri_available"] is False  # no server in CI
+          print("ok", sorted(config))
+          PY
+
+  lint:
+    name: lint (black, isort, flake8, mypy)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: huri-core[client] at the ref, for mypy
+        # mypy has ignore_missing_imports; huri-core ships py.typed, so its
+        # annotations are checked against.
+        run: |
+          pip install \
+            "huri-core[client] @ git+https://github.com/Lucy-Robotics/huri-core.git@${HURI_CORE_REF}"
+      - run: pip install -e ".[dev]"
+      - run: black --check huri_playground tests scripts
+      - run: isort --check-only huri_playground tests scripts
+      - run: flake8 huri_playground tests scripts
+      - run: mypy huri_playground scripts --check-untyped-defs
+
+  registry:
+    name: modules.yaml names vs huri-modules' registry
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install "omegaconf>=2.3,<2.4"
+      - name: fetch registry.toml at HURI_MODULES_REF
+        run: |
+          curl -fsSL --retry 3 -o registry.toml \
+            "https://raw.githubusercontent.com/Lucy-Robotics/huri-modules/${HURI_MODULES_REF}/registry.toml"
+      - run: python scripts/check_modules_yaml.py registry.toml
+
+  build:
+    name: build huri-playground
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install build twine
+      - run: python -m build --outdir dist .
+      - run: twine check dist/*

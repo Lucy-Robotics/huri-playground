@@ -1,0 +1,111 @@
+# What the playground offers visitors. The list of modules itself comes from
+# HuRI (GET /modules, its `details`): a module this HuRI does not run is never
+# shown, and one missing here is still offered, with its constructor defaults.
+# This file only adds what HuRI cannot know: how to present a module, and its
+# args. The
+# browser sends module names, never args, because HuRI instantiates whatever
+# module config a client hands it.
+#
+# inbound:  topics the browser may publish (the curated `huri.*` topics of
+#           huri-events), each with its own limits. A session gets those its
+#           modules consume.
+# selected: modules ticked when the page opens.
+# groups:   how the page sorts the modules, in this order; a module with no
+#           group (one HuRI added since) goes under "Other".
+# modules.<name>.with: args added when another module is in the same pipeline.
+# modules.<name>.options: args the visitor may set, to one of the listed values
+#                         (needs: only when that module is in the pipeline too;
+#                         ticks: what the page ticks when one is picked).
+
+inbound:
+  huri.question:
+    max_per_minute: 10
+    max_chars: 500
+  huri.audio.in:
+    # 30 ms microphone frames: 2000 a minute while the microphone is on.
+    max_per_minute: 2400
+    binary: true # raw 16 kHz int16 PCM
+
+selected: [rag, tts, mov]
+
+groups:
+  listen: Hear you
+  feel: Read your emotion
+  think: Understand and answer
+  speak: Speak and move
+
+modules:
+  vad:
+    group: listen
+    label: Voice detection
+    description: Listens to your microphone and hears when you speak.
+    args:
+      vad_agressiveness: 3
+      silence_duration: 1.5
+      block_duration: 0.03 # the page sends 30 ms frames
+  stt:
+    group: listen
+    label: Speech to text
+    description: Writes down what you say (Whisper).
+    args:
+      language: en
+      block_duration: 0.03
+  tag:
+    group: listen
+    label: Sentence builder
+    description: Joins what was transcribed into one sentence.
+    args:
+      min_prefix: 3
+  emo:
+    group: feel
+    label: Emotion analysis
+    description: Reads emotion from the tone of your voice.
+    args:
+      block_duration: 0.03
+      # Half HuRI's default, so the page updates what it senses mid-sentence.
+      analysis_window: 2.0
+  eag:
+    group: feel
+    label: Emotion summary
+    description: Sums up your emotion over a sentence.
+    args: {}
+  qag:
+    group: think
+    label: Question builder
+    description: Turns your spoken sentence, and its emotion, into a question.
+    args:
+      use_emotion: false
+    with:
+      # Waits for the emotion of each sentence, so only when one is coming.
+      eag:
+        use_emotion: true
+    options:
+      mode:
+        label: Emotion and answer
+        default: parallel
+        needs: eag
+        # Speech, emotion and the question built from both.
+        ticks: [tag, eag]
+        values:
+          parallel: In parallel, HuRI answers while it reads your emotion
+          sequential: In sequence, HuRI waits for your emotion, then answers
+  rag:
+    group: think
+    label: Conversation
+    description: Answers you in writing, with an LLM and a memory.
+    args:
+      language: en
+      tone: friendly
+      response_format: short
+      max_history_turns: 6
+      temperature: 0.7
+  tts:
+    group: speak
+    label: Voice
+    description: Speaks the answers aloud.
+    args: {}
+  mov:
+    group: speak
+    label: Gestures
+    description: Mouse-Man gestures as HuRI speaks (EMAGE).
+    args: {}

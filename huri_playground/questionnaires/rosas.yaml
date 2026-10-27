@@ -1,0 +1,36 @@
+# Robotic Social Attributes Scale (Carpinella et al., 2017), 7-point Likert.
+# Items from latex-questionnaire/RoSAS/RoSAS-items.csv.
+id: rosas
+title: Attributes of HuRI
+scale:
+  points: 7
+  low: Not at all
+  high: Definitely
+sections:
+  - prompt: >-
+      Using the scale provided, how closely are the following attributes
+      associated with the robot?
+    items:
+      - {id: dangerous, label: Dangerous}
+      - {id: emotional, label: Emotional}
+      - {id: compassionate, label: Compassionate}
+      - {id: aggressive, label: Aggressive}
+      - {id: capable, label: Capable}
+      - {id: happy, label: Happy}
+      - {id: strange, label: Strange}
+      - {id: organic, label: Organic}
+      - {id: scary, label: Scary}
+      - {id: responsive, label: Responsive}
+      - {id: awkward, label: Awkward}
+      - {id: knowledgeable, label: Knowledgeable}
+      - {id: sociable, label: Sociable}
+      - {id: feeling, label: Feeling}
+      - {id: competent, label: Competent}
+      - {id: reliable, label: Reliable}
+      - {id: awful, label: Awful}
+      - {id: interactive, label: Interactive}
+# The three RoSAS factors, each the mean of its items.
+scores:
+  warmth: [happy, feeling, sociable, organic, compassionate, emotional]
+  competence: [capable, responsive, interactive, reliable, competent, knowledgeable]
+  discomfort: [scary, strange, awkward, dangerous, awful, aggressive]
